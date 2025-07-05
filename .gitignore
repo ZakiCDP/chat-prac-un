@@ -69,3 +69,6 @@ docker-data/
 backend/__pycache__/
 backend/backend/__pycache__/
 backend/.venv
+
+# Other
+*.drawio
