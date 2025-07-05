@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   db:
     image: postgres:14
@@ -11,26 +13,44 @@ services:
       - POSTGRES_DB=webchat
     ports:
       - "5432:5432"
-    restart: always
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     volumes:
       - ./backend:/app
+      - /app/.venv
+      - /root/.cache
     ports:
       - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     env_file:
       - ./.env
     environment:
       - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/webchat
       - SECRET_KEY=your_secret_key_here
       - BACKEND_CORS_ORIGINS=["http://localhost:3000"]
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      - PYTHONUNBUFFERED=1
+      - POETRY_VIRTUALENVS_CREATE=false
+    command: >
+      sh -c "poetry run uvicorn main:app
+      --host 0.0.0.0
+      --port 8000
+      --reload"
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -40,7 +60,10 @@ services:
       - backend
     environment:
       - REACT_APP_API_URL=http://localhost:8000
-    command: npm start
+      - CHOKIDAR_USEPOLLING=true # For file watching in Docker
+      - WATCHPACK_POLLING=true # For webpack in Docker
+    stdin_open: true
+    tty: true
 
 volumes:
   postgres_data:
