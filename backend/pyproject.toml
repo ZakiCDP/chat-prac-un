@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "Chat-shish"
+name = "Chat-ai-agentos"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <your.email@example.com>"]
