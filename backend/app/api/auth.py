@@ -9,7 +9,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = "shish"
+SECRET_KEY = "tuctucwhoisthis?isyourmom"
 ALGORITHM = "HS256"
 
 def verify_password(plain_password, hashed_password):
