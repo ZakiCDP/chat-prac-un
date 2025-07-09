@@ -1,28 +1,25 @@
-from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
-from app.db.database import get_db
-from app.models.user import User
+from fastapi import HTTPException, Depends
+from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from app.models.user import User
+from app.db.database import get_db
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
-SECRET_KEY = "tuctucwhoisthis?isyourmom"
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")  # указывайте правильный путь
+
+SECRET_KEY = "tuctucwhoisthis?isyourmom"  # тот же, что used в auth.py
 ALGORITHM = "HS256"
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
-    credentials_exception = HTTPException(
-        status_code=401,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
+        login: str = payload.get("sub")
+        if login is None:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
     except JWTError:
-        raise credentials_exception
-    user = await get_user_by_login(db, username)
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    user = await get_user_by_login(db, login)
     if user is None:
-        raise credentials_exception
+        raise HTTPException(status_code=404, detail="User not found")
     return user
