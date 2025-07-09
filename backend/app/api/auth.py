@@ -1,6 +1,8 @@
-from fastapi import APIRouter
+from fastapi import Depends, FastAPI, APIRouter
+from fastapi.security import OAuth2PasswordBearer  
 
-# Need to improve code below
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+router = APIRouter()
 
 # POST
 @router.post("/auth/register")
@@ -30,7 +32,7 @@ async def get_profile(token: str = Depends(oauth2_scheme)):
     }
 
 # PATCH
-@router.patch("/me")
-async def update_profile():
-    # Редактирование профиля
-    pass
+# @router.patch("/me")
+# async def update_profile():
+#     # Редактирование профиля
+#     pass
