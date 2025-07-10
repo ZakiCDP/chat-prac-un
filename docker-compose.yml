@@ -8,7 +8,7 @@ services:
     env_file:
       - ./.env
     environment:
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=G2ty91wx42!dd0
       - POSTGRES_USER=postgres
       - POSTGRES_DB=webchat
     ports:
@@ -36,7 +36,7 @@ services:
     env_file:
       - ./.env
     environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/webchat
+      - DATABASE_URL=postgresql+asyncpg://postgres:G2ty91wx42!dd0@db:5432/webchat
       - SECRET_KEY=your_secret_key_here
       - BACKEND_CORS_ORIGINS=["http://localhost:3000"]
       - PYTHONUNBUFFERED=1

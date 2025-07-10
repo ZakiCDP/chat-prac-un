@@ -10,10 +10,13 @@ app.include_router(chat.router)
 def read_root():
     return {"message": "Server is running"}
 
-# Перед запуском таблицы создайте:
-# from app.db.database import engine, Base
-# import asyncio
-# async def create_tables():
-#     async with engine.begin() as conn:
-#         await conn.run_sync(Base.metadata.create_all)
-# asyncio.run(create_tables())
+
+import asyncio
+from app.db.database import engine, Base
+async def create_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+@app.on_event("startup")
+async def startup_event():
+    await create_tables()
