@@ -12,15 +12,16 @@ const AuthForm = ({ onLogin }) => {
   };
 
   return (
-    <div className="auth-form">
+    <div className="auth-container">
       <h2>{isLogin ? "Login" : "Register"}</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="auth-form">
         <input
           type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
+          className="input"
         />
         <input
           type="password"
@@ -28,10 +29,13 @@ const AuthForm = ({ onLogin }) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          className="input"
         />
-        <button type="submit">{isLogin ? "Login" : "Register"}</button>
+        <button type="submit" className="login-btn btn">
+          {isLogin ? "Login" : "Register"}
+        </button>
       </form>
-      <button onClick={() => setIsLogin(!isLogin)}>
+      <button onClick={() => setIsLogin(!isLogin)} className="register-btn btn">
         {isLogin ? "Need to register?" : "Already have an account?"}
       </button>
     </div>
